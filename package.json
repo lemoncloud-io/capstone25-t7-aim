@@ -14,7 +14,11 @@
     "start:prod:backend": "npm run start -w backend",
     "start:prod:frontend": "npm run preview -w frontend",
     "test:backend": "npm test -w backend",
-    "test:frontend": "npm test -w frontend"
+    "test:frontend": "npm test -w frontend",
+    "lint": "eslint \"apps/**/src/**/*.{ts,tsx}\" \"packages/**/src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"apps/**/src/**/*.{ts,tsx}\" \"packages/**/src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"apps/**/src/**/*.{ts,tsx,json,css,md}\" \"packages/**/src/**/*.{ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"apps/**/src/**/*.{ts,tsx,json,css,md}\" \"packages/**/src/**/*.{ts,tsx,json,css,md}\""
   },
   "author": "LemonCloud",
   "license": "Apache-2.0",
@@ -23,6 +27,12 @@
     "packages/*"
   ],
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2"
   }
 }

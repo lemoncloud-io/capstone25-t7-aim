@@ -136,6 +136,37 @@ npm run test:backend
 npm run test:frontend
 ```
 
+## 코드 품질
+
+### Linting
+
+**모든 워크스페이스 린팅:**
+```bash
+npm run lint
+```
+
+**자동 수정:**
+```bash
+npm run lint:fix
+```
+
+### 포매팅
+
+**코드 포맷팅:**
+```bash
+npm run format
+```
+
+**포맷 검사:**
+```bash
+npm run format:check
+```
+
+### 설정 파일
+
+- **ESLint**: `.eslintrc.json` - TypeScript, Prettier 통합
+- **Prettier**: `.prettierrc` - 일관된 코드 스타일
+
 ## 기술 스택
 
 ### 프론트엔드

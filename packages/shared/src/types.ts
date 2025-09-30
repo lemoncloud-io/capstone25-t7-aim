@@ -1,10 +1,10 @@
 export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  message?: string
+    success: boolean;
+    data?: T;
+    message?: string;
 }
 
 export interface HelloResponse {
-  greeting: string
-  timestamp: string
+    greeting: string;
+    timestamp: string;
 }

@@ -21,7 +21,23 @@
    npm install
    ```
 
-3. **개발 서버 시작**
+3. **환경 변수 설정**
+
+   각 애플리케이션에 `.env` 파일을 생성해야 합니다:
+
+   **Backend 환경 변수:**
+   ```bash
+   cp apps/backend/.env.example apps/backend/.env
+   ```
+
+   **Frontend 환경 변수:**
+   ```bash
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
+
+   필요에 따라 생성된 `.env` 파일의 값을 수정하세요.
+
+4. **개발 서버 시작**
    ```bash
    npm start
    ```

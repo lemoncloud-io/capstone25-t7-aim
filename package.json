@@ -1,0 +1,28 @@
+{
+  "name": "capstone-simple-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backend": "npm run dev -w backend",
+    "frontend": "npm run dev -w frontend",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "build:backend": "npm run build -w backend",
+    "build:frontend": "npm run build -w frontend",
+    "start:prod": "concurrently \"npm run start -w backend\" \"npm run preview -w frontend\"",
+    "start:prod:backend": "npm run start -w backend",
+    "start:prod:frontend": "npm run preview -w frontend",
+    "test:backend": "npm test -w backend",
+    "test:frontend": "npm test -w frontend"
+  },
+  "author": "LemonCloud",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

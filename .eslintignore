@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+coverage
+.next
+out
+
+# Configuration files
+*.config.js
+*.config.ts
+vite.config.ts
+jest.config.js
+tailwind.config.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store

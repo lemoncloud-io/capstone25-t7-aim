@@ -211,4 +211,5 @@ npm run format:check
 - **concurrently** - 여러 명령어 동시 실행
 
 
-pull request test입니다
+김예진 pull request test입니다
+최서연 test입니다.

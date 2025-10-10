@@ -143,6 +143,32 @@ npm run start:prod:backend
 npm run start:prod:frontend
 ```
 
+### 빌드[aim-hello-api]
+
+`aim-hello-api` 기준 모노레포 구성 설정
+
+1. 모듈(필수) 설치: `npm i --save lemon-core -w aim-hello-api`
+1. 모듈(개발) 설치: `npm i --save-dev lemon-devkit -w aim-hello-api ttypescript@1.5.15 nodemon@2.0.20 typescript@4.7.4 ts-transformer-keys@0.4.3 ts-node@8.1.0 @types/node@17.0.42 @types/supertest@2.0.10 jest@27.5.1 ts-jest@27.1.5 ts-node@8.1.0 superagent@5.3.1 supertest@4.0.2 tsconfig-paths@4.1.2`
+1. 모듈 빌드: `npm run build -w aim-hello-api`
+1. 모듈 실행(로컬): `npm run start -w aim-hello-api`
+
+- API 로컬 실행후 `http :8000` 호출시 아래와 같은 결과 얻음 (httpie 도구 설치 필요)
+
+```sh
+❯ http :8000/
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 123
+Content-Type: text/html; charset=utf-8
+
+aim-hello-api/0.25.1010
+lemon-core/^4.0.7
+modified/2025-10-10 15:30:36
+env/ENV= NAME=none STAGE=local
+env/REPORT_ERROR_ARN=
+```
+
 ## 테스트
 
 ### 테스트 실행

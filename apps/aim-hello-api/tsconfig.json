@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "rootDir": "../..",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "target": "es6",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+            ]
+        },
+        "plugins": [
+            {
+                "transform": "ts-transformer-keys/transformer"
+            }
+        ],
+        "declaration": false,
+        "incremental": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/tests/*",
+        "**/src/**/*.spec.ts",
+        "**/src/**/*.spec.js"
+    ]
+}

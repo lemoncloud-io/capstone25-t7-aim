@@ -17,6 +17,14 @@ const NS = $U.NS('hello', 'yellow'); // NAMESPACE TO BE PRINTED.
 /**
  * class: `HelloAPIController`
  * - handle of `/hello` type
+ *
+ * support basic CRUD operations.
+ * - GET    /hello         => list-all
+ * - GET    /hello/:id     => get-one
+ * - POST   /hello/:id     => create-new (at position :id)
+ * - PUT    /hello/:id     => update-existing (at position :id)
+ * - DELETE /hello/:id     => delete-existing (at position :id)
+ * - GET    /hello/:id/say => get-one with say command.
  */
 export class HelloAPIController extends GeneralWEBController {
     /** sample data */

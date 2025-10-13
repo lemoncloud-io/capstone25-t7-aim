@@ -8,6 +8,8 @@
 - **npm** >= 10.x 
 - **Git** ([다운로드](https://git-scm.com/))
 
+추가로 `nvm` 를 설치해주면 편리함. (search by google)
+
 ## Getting Started
 
 1. **저장소 클론**
@@ -18,7 +20,8 @@
 
 2. **의존성 설치**
    ```bash
-   npm install
+   node --version       # v22.15.1
+   npm ci
    ```
 
 3. **환경 변수 설정**

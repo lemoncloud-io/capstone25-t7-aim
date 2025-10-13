@@ -2,7 +2,7 @@
     "name": "aim-hello-api",
     "version": "0.25.1010",
     "description": "Simplified Boilerplate of Serverless API",
-    "main": "dist/index.js",
+    "main": "dist/apps/aim-hello-api/src/index.js",
     "types": "dist/index.d.ts",
     "port": 8000,
     "scripts": {

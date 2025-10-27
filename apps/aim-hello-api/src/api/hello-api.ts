@@ -13,6 +13,8 @@ import { Model, TestModel } from '../service/model';
 import { HelloService } from '../service/service';
 const NS = $U.NS('hello', 'yellow'); // NAMESPACE TO BE PRINTED.
 
+import { getCityCountryCorrection } from '../services/geminiService';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * class: `HelloAPIController`
@@ -160,6 +162,31 @@ export class HelloAPIController extends GeneralWEBController {
         const i = $U.N(node?.id, 0);
         delete this.BUFF[i];
         return this.modelAsView(node);
+    };
+
+    /**
+     * handler for gemini requests.
+     *
+     * @param id request-id in dashed format. (ex: get-city-country-correction)
+     * @param param optional parameters in query-string.
+     * @param body the arguments from orignal function call.
+     * @returns result of function call.
+     *
+     * ```sh
+     * $ http ':8000/hello/world/gemini' message=ok
+     * $ http ':8000/hello/get-city-country-correction/gemini' city=서울 'country=한국'
+     */
+    public doPostGemini: NextHandler = async (id, param, body, context) => {
+        const errScope = `doPostGemini(${this.type()}/${id ?? ''})`;
+        _log(NS, `${errScope} ...`);
+        if (id == 'world') return { body };
+        if (id == 'get-city-country-correction') {
+            const { city, country } = body;
+            const $res = await getCityCountryCorrection(city, country);
+            _log(NS, `> result =`, $res);
+            return $res;
+        }
+        return { message: 'This is a placeholder for Gemini-related functionality.' };
     };
 }
 

@@ -15,6 +15,7 @@
         "test:watch": "jest --config=jest.config.json --watchAll"
     },
     "dependencies": {
+        "@google/genai": "^1.27.0",
         "lemon-core": "^4.0.7"
     },
     "devDependencies": {

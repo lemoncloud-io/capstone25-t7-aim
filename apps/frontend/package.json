@@ -11,9 +11,10 @@
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "dotenv": "^17.2.3"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

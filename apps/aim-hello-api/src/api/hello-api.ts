@@ -180,12 +180,14 @@ export class HelloAPIController extends GeneralWEBController {
         const errScope = `doPostGemini(${this.type()}/${id ?? ''})`;
         _log(NS, `${errScope} ...`);
         if (id == 'world') return { body };
-        if (id == 'get-city-country-correction') {
-            const { city, country } = body;
-            const $res = await getCityCountryCorrection(city, country);
-            _log(NS, `> result =`, $res);
-            return $res;
-        }
+        // if (id == 'get-city-country-correction') {
+        //     const { city, country } = body;
+        //     const $res = await getCityCountryCorrection(city, country);
+        //     _log(NS, `> result =`, $res);
+        //     return $res;
+        // }
+        if (id == 'get-city-country-correction') return await getCityCountryCorrection(body?.city, body?.country);
+
         return { message: 'This is a placeholder for Gemini-related functionality.' };
     };
 }

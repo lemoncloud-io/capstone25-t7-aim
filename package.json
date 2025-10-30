@@ -8,6 +8,7 @@
     "frontend": "npm run dev -w frontend",
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "npm run build -w backend && npm run build -w frontend",
+    "build:force": "npm run build -w backend && npm run build -w frontend -- --force",
     "build:backend": "npm run build -w backend",
     "build:frontend": "npm run build -w frontend",
     "start:prod": "concurrently \"npm run start -w backend\" \"npm run preview -w frontend\"",

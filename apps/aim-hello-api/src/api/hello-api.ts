@@ -10,7 +10,7 @@
  */
 import { $T, $U, _log, NextHandler, GeneralWEBController, NextContext } from 'lemon-core';
 import { Model, TestModel } from '../service/model';
-import { HelloService } from '../service/service';
+import { HelloService, GeminiService } from '../service/service';
 const NS = $U.NS('hello', 'yellow'); // NAMESPACE TO BE PRINTED.
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -34,6 +34,9 @@ export class HelloAPIController extends GeneralWEBController {
         },
     ];
 
+    /** Gemini service for AI refactoring */
+    private geminiService: GeminiService;
+
     /**
      * default constructor.
      */
@@ -43,6 +46,7 @@ export class HelloAPIController extends GeneralWEBController {
 
         const tableName = $U.env('MY_DYNAMO_TABLE');
         this.service = service ?? new HelloService(tableName);
+        this.geminiService = new GeminiService();
         _log(NS, `> tableName = ${tableName}`);
     }
 
@@ -111,6 +115,7 @@ export class HelloAPIController extends GeneralWEBController {
         const errScope = `doPost(${this.type()}/${id ?? ''})`;
         _log(NS, `${errScope} ...`);
         if (id == 'echo') return this.doPostEcho('0', param, body, context);
+        if (id == 'analyze') return this.doPostAnalyze('0', param, body, context);
 
         //* append into array.
         _log(NS, errScope);
@@ -160,6 +165,35 @@ export class HelloAPIController extends GeneralWEBController {
         const i = $U.N(node?.id, 0);
         delete this.BUFF[i];
         return this.modelAsView(node);
+    };
+
+    /**
+     * Analyze the project.
+     *
+     * ```sh
+     * $ http POST ':8000/hello/analyze' s3Url=...
+     */
+    public doPostAnalyze: NextHandler = async (id, param, body, context) => {
+        const errScope = `doPostAnalyze(${this.type()}/${id ?? ''})`;
+        _log(NS, `${errScope} ...`);
+
+        const s3Url = body?.s3Url;
+        if (!s3Url) {
+            throw new Error('s3Url is required');
+        }
+
+        _log(NS, `[DEBUG] Received S3 URL: ${s3Url}`);
+
+        try {
+            // Call AI refactoring service
+            const result = await this.geminiService.refactorCode(s3Url);
+            _log(NS, `[DEBUG] Refactoring completed: ${result.status}`);
+
+            return result;
+        } catch (error) {
+            _log(NS, `[ERROR] Refactoring failed: ${error}`);
+            throw error;
+        }
     };
 }
 

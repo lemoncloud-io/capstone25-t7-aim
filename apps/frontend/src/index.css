@@ -61,3 +61,7 @@ h2 {
     color: #34495e;
     margin-bottom: 15px;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

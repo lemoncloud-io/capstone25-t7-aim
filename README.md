@@ -5,7 +5,7 @@
 시작하기 전에 다음이 설치되어 있는지 확인하세요:
 
 - **Node.js** >= 22.x ([다운로드](https://nodejs.org/))
-- **npm** >= 10.x 
+- **npm** >= 10.x
 - **Git** ([다운로드](https://git-scm.com/))
 
 추가로 `nvm` 를 설치해주면 편리함. (search by google)
@@ -13,37 +13,42 @@
 ## Getting Started
 
 1. **저장소 클론**
-   ```bash
-   git clone git@github.com:lemoncloud-io/capstone25-t7-aim.git
-   cd capstone25-t7-aim
-   ```
+
+    ```bash
+    git clone git@github.com:lemoncloud-io/capstone25-t7-aim.git
+    cd capstone25-t7-aim
+    ```
 
 2. **의존성 설치**
-   ```bash
-   node --version       # v22.15.1
-   npm ci
-   ```
+
+    ```bash
+    node --version       # v22.15.1
+    npm ci
+    ```
 
 3. **환경 변수 설정**
 
-   각 애플리케이션에 `.env` 파일을 생성해야 합니다:
+    각 애플리케이션에 `.env` 파일을 생성해야 합니다:
 
-   **Backend 환경 변수:**
-   ```bash
-   cp apps/backend/.env.example apps/backend/.env
-   ```
+    **Backend 환경 변수:**
 
-   **Frontend 환경 변수:**
-   ```bash
-   cp apps/frontend/.env.example apps/frontend/.env
-   ```
+    ```bash
+    cp apps/backend/.env.example apps/backend/.env
+    ```
 
-   필요에 따라 생성된 `.env` 파일의 값을 수정하세요.
+    **Frontend 환경 변수:**
+
+    ```bash
+    cp apps/frontend/.env.example apps/frontend/.env
+    ```
+
+    필요에 따라 생성된 `.env` 파일의 값을 수정하세요.
 
 4. **개발 서버 시작**
-   ```bash
-   npm start
-   ```
+    ```bash
+    npm start
+    ```
+
     - 프론트엔드: http://localhost:5173
     - 백엔드 API: http://localhost:4000
 
@@ -54,42 +59,113 @@ capstone25-t7-aim/
 ├── apps/
 │   ├── frontend/          # React + Vite 애플리케이션
 │   │   ├── src/
+│   │   │   ├── components/    # 재사용 가능한 UI 컴포넌트
+│   │   ├── pages/         # 페이지 컴포넌트
+│   │   ├── services/      # API 서비스 및 통신 로직
+│   │   ├── assets/        # 정적 자산
+│   │   ├── App.tsx        # 메인 앱 컴포넌트
+│   │   ├── main.tsx       # React 진입점
+│   │   ├── index.css      # 글로벌 스타일
+│   │   ├── types.ts       # TypeScript 타입 정의
+│   │   └── vite-env.d.ts  # Vite 환경 타입
 │   │   ├── public/
 │   │   ├── package.json
 │   │   ├── vite.config.ts
-│   │   └── tsconfig.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.build.json
+│   │   ├── tailwind.config.js
+│   │   ├── postcss.config.js
+│   │   └── jest.config.ts
 │   │
 │   └── backend/           # Express API 서버
 │       ├── src/
+│       │   ├── api/           # API 라우트 핸들러
+│       │   ├── models/        # Mongoose 모델
+│       │   ├── services/      # 비즈니스 로직 서비스
+│       │   ├── app.ts         # Express 앱 설정
+│       │   ├── server.ts      # 서버 진입점
+│       │   └── index.ts       # 메인 진입점
 │       ├── package.json
-│       └── tsconfig.json
+│       ├── tsconfig.json
+│       ├── tsconfig.build.json
+│       ├── jest.config.ts
+│       ├── nodemon.json
+│       └── .env.example
 │
 ├── packages/
 │   └── shared/            # 공유 타입과 유틸리티
 │       ├── src/
+│       │   ├── index.ts   # 메인 익스포트
 │       │   ├── types.ts   # 공유 TypeScript 타입
 │       │   └── utils.ts   # 공유 유틸리티 함수
-│       └── package.json
+│       ├── package.json
+│       ├── tsconfig.json
+│       └── jest.config.json
 │
-└── package.json           # 루트 워크스페이스 설정
+├── apps/
+│   └── aim-hello-api/     # AIM 분석 API
+│       ├── src/
+│       │   ├── api/
+│       │   ├── service/
+│       │   ├── engine.ts
+│       │   ├── express.ts
+│       │   └── index.ts
+│       ├── handler.js
+│       ├── jest.config.json
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── tsconfig.build.json
+│       └── env/
+│
+├── sample/                # 샘플 파일들
+├── tmp/                   # 임시 파일들
+├── volume/                # Docker 볼륨
+│   ├── cache/
+│   ├── lib/
+│   └── logs/
+│
+├── docker-compose.yml     # Docker Compose 설정
+├── package.json           # 루트 워크스페이스 설정
+├── LICENSE
+├── README.md
+└── GEMINI.md              # Gemini 관련 문서
 ```
 
-### 주요 디렉토리
+### 주요 디렉토리 설명
 
 - **`apps/frontend`** - Vite를 사용한 React 프론트엔드 애플리케이션
+    - `components/` - 재사용 가능한 UI 컴포넌트들
+    - `pages/` - 라우팅되는 페이지 컴포넌트들
+    - `services/` - 백엔드 API와의 통신 로직
+    - `types/` - TypeScript 타입 정의
+
 - **`apps/backend`** - Express.js REST API 서버
+    - `api/` - API 엔드포인트 핸들러들
+    - `models/` - MongoDB/Mongoose 데이터 모델들
+    - `services/` - 비즈니스 로직과 백그라운드 작업들
+
+- **`apps/aim-hello-api`** - AIM 분석을 위한 API 서비스
+    - `api/` - 분석 API 엔드포인트들
+    - `service/` - 분석 로직과 모델들
+
 - **`packages/shared`** - 프론트엔드와 백엔드 간 공유 코드
+    - `types.ts` - 공통 타입 정의
+    - `utils.ts` - 공통 유틸리티 함수들
+
+- **`volume/`** - Docker 컨테이너용 영구 저장소
 
 ## 💻 개발
 
 ### 개발 모드 시작하기
 
 **프론트엔드와 백엔드 모두 시작:**
+
 ```bash
 npm start
 ```
 
 **개별 시작:**
+
 ```bash
 # 프론트엔드만
 npm run frontend
@@ -103,8 +179,8 @@ npm run backend
 앱에서 공유 타입과 유틸리티 임포트:
 
 ```typescript
-import { ApiResponse } from '@shared/types'
-import { createAsyncDelay } from '@shared/utils'
+import { ApiResponse } from '@shared/types';
+import { createAsyncDelay } from '@shared/utils';
 ```
 
 ## 빌드
@@ -112,11 +188,13 @@ import { createAsyncDelay } from '@shared/utils'
 ### 프로덕션 빌드
 
 **모든 워크스페이스 빌드:**
+
 ```bash
 npm run build
 ```
 
 **개별 빌드:**
+
 ```bash
 # 백엔드 빌드
 npm run build:backend
@@ -133,11 +211,13 @@ npm run build:frontend
 ### 프로덕션 빌드 실행
 
 **프로덕션 서버 시작:**
+
 ```bash
 npm run start:prod
 ```
 
 **또는 개별 실행:**
+
 ```bash
 # 백엔드 프로덕션
 npm run start:prod:backend
@@ -186,11 +266,13 @@ npm run test:frontend
 ### Linting
 
 **모든 워크스페이스 린팅:**
+
 ```bash
 npm run lint
 ```
 
 **자동 수정:**
+
 ```bash
 npm run lint:fix
 ```
@@ -198,11 +280,13 @@ npm run lint:fix
 ### 포매팅
 
 **코드 포맷팅:**
+
 ```bash
 npm run format
 ```
 
 **포맷 검사:**
+
 ```bash
 npm run format:check
 ```
@@ -215,6 +299,7 @@ npm run format:check
 ## 기술 스택
 
 ### 프론트엔드
+
 - **React 18** - UI 라이브러리
 - **TypeScript** - 타입 안정성
 - **Vite** - 빠른 빌드 도구 및 개발 서버
@@ -222,6 +307,7 @@ npm run format:check
 - **Jest** - 테스팅 프레임워크
 
 ### 백엔드
+
 - **Express.js** - 웹 프레임워크
 - **TypeScript** - 타입 안정성
 - **Node.js** - 런타임 환경
@@ -229,16 +315,17 @@ npm run format:check
 - **Nodemon** - 개발 자동 재시작
 
 ### 공유
+
 - **TypeScript** - 공유 타입 및 인터페이스
 - **공통 유틸리티** - 재사용 가능한 함수
 
 ### 개발 도구
+
 - **npm workspaces** - 모노레포 관리
 - **ESLint** - 코드 린팅
 - **Prettier** - 코드 포매팅
 - **ts-node** - TypeScript 실행
 - **concurrently** - 여러 명령어 동시 실행
-
 
 김예진 pull request test입니다
 최서연 test입니다.

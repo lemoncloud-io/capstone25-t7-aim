@@ -31,3 +31,33 @@ const $LUT = {
  * export as default.
  */
 export default $LUT;
+
+/**
+ * Types for AI refactoring
+ */
+export interface RefactorAnalysis {
+    needsRefactoring: boolean;
+    appType: 'frontend-only' | 'backend-only' | 'fullstack';
+    frameworks: string[];
+    refactoringPlan: string;
+}
+
+export interface RefactoredStructure {
+    apps: {
+        frontend?: {
+            files: Record<string, string>;
+        };
+        backend?: {
+            files: Record<string, string>;
+        };
+    };
+}
+
+export interface RefactorResult {
+    analysis: RefactorAnalysis;
+    refactoredStructure: RefactoredStructure;
+    status: 'refactoring_completed' | 'no_refactoring_needed';
+    message: string;
+    newS3Key?: string;
+    localFilePath?: string;
+}

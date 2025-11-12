@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { fetchDeployment } from '../../services/deployment/deploymentApi';
-import { Deployment } from '../../types';
+import { fetchDeployment, fetchDeploymentStatus } from '../../apis/deploymentApi';
+import { DeploymentResponse } from '@shared/types';
 
 interface PipelineStep {
     id: number;
@@ -17,8 +17,8 @@ interface EnvVar {
 }
 
 interface DeploymentPipelineProps {
-    projectId: string;
-    initialDeployment?: Deployment | null;
+    projectId?: string;
+    initialDeployment?: DeploymentResponse | null;
     initialLogs?: { message: string }[];
 }
 
@@ -70,20 +70,42 @@ export default function DeploymentPipeline({
 
     const [logs, setLogs] = useState<string[]>(initialLogs ? initialLogs.map(log => log.message) : []);
 
+    const [isPolling, setIsPolling] = useState(true);
+
     useEffect(() => {
         let deployment = initialDeployment;
         let logsData: { message: string }[] = initialLogs || [];
+        let isInitialLoad = true;
 
         const fetchDeploymentData = async () => {
-            if (!deployment && deploymentId) {
-                try {
+            try {
+                if (isInitialLoad && deploymentId) {
+                    // 초기 로드 시 전체 데이터 가져오기
                     const { deployment: fetchedDeployment, logs: fetchedLogs } = await fetchDeployment(deploymentId);
                     deployment = fetchedDeployment;
                     logsData = fetchedLogs;
-                } catch (error) {
-                    console.error('Error fetching deployment data:', error);
-                    return;
+                    isInitialLoad = false;
+                } else if (deploymentId) {
+                    // polling 시 상태만 확인
+                    const statusData = await fetchDeploymentStatus(deploymentId);
+                    // 기존 deployment 객체에 상태 정보만 업데이트
+                    if (deployment) {
+                        deployment.status = statusData.status;
+                        deployment.currentStep = statusData.currentStep;
+                        deployment.frontendUrl = statusData.frontendUrl;
+                        deployment.backendUrl = statusData.backendUrl;
+                        deployment.projectId = statusData.projectId;
+                    }
+                } else {
+                    // deploymentId가 없으면 initialDeployment 사용 (초기 렌더링용)
+                    deployment = initialDeployment;
+                    logsData = initialLogs || [];
                 }
+            } catch (error) {
+                console.error('Error fetching deployment data:', error);
+                // 에러 발생 시에도 initialDeployment로 폴백
+                deployment = initialDeployment;
+                logsData = initialLogs || [];
             }
 
             if (deployment) {
@@ -91,7 +113,7 @@ export default function DeploymentPipeline({
                 const projectIdValue = deployment.projectId;
                 localStorage.setItem('currentProjectId', projectIdValue);
 
-                console.log('Frontend - Deployment data:', deployment);
+                // console.log('Frontend - Deployment data:', deployment);
                 console.log('Frontend - Current step:', deployment.currentStep);
 
                 // 배포 상태에 따른 단계 업데이트 (백엔드에서 6가지 상태 체크)
@@ -146,26 +168,41 @@ export default function DeploymentPipeline({
 
                 setSteps(newSteps);
 
-                // 로그 업데이트
-                if (logsData) {
-                    setLogs(logsData.map((log: { message: string }) => log.message));
+                // 로그는 초기 로드 시에만 업데이트 (polling 시에는 로그가 변경되지 않음)
+                if (isInitialLoad) {
+                    if (logsData) {
+                        setLogs(logsData.map((log: { message: string }) => log.message));
+                    }
                 }
 
-                // ✅ SUCCESS 상태일 때 모달 표시 및 URL 설정
-                if (overallStatus === 'SUCCESS') {
-                    // deployment 객체에서 URL 가져오기 (필드명은 백엔드 응답에 따라 조정)
-                    const url = deployment.url || deployment.deployedUrl || `https://${deployment.projectName}.app`;
-                    setDeployedUrl(url);
-                    setShowModal(true);
+                // ✅ SUCCESS 또는 FAILED 상태일 때 polling 중지
+                if (overallStatus === 'SUCCESS' || overallStatus === 'FAILED') {
+                    setIsPolling(false);
+                    // 배포 완료 시 모달 표시 (SUCCESS일 때만)
+                    if (overallStatus === 'SUCCESS') {
+                        const url = deployment.frontendUrl || `https://${deployment.projectId}.app`;
+                        setDeployedUrl(url);
+                        setShowModal(true);
+                    }
                 }
             }
         };
 
-        // 페이지 로드 시 한 번만 데이터 가져오기 (새로고침으로 상태 확인)
+        // 초기 데이터 로드
         fetchDeploymentData();
 
-        // 폴링 제거 - 새로고침으로 상태 확인
-    }, [deploymentId, initialDeployment, initialLogs]); // 폴링 제거로 isDeploymentComplete 의존성 제거
+        // Polling 설정
+        const intervalId = setInterval(() => {
+            if (isPolling) {
+                fetchDeploymentData();
+            }
+        }, 2000);
+
+        // Cleanup function
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [deploymentId, initialDeployment, initialLogs, isPolling]); // isPolling을 의존성에 추가
 
     const progressPercent = (steps.filter(s => s.status === 'completed').length / steps.length) * 100;
 
@@ -174,10 +211,15 @@ export default function DeploymentPipeline({
         setShowModal(false);
     };
 
-    const handleGoToProject = () => {
+    const handleGoToProjectDetail = () => {
         setShowModal(false);
         window.scrollTo(0, 0);
-        navigate('/project');
+        const projectId = localStorage.getItem('currentProjectId');
+        if (projectId) {
+            navigate(`/project/${projectId}`);
+        } else {
+            navigate('/project');
+        }
     };
 
     return (
@@ -252,18 +294,6 @@ export default function DeploymentPipeline({
                                 </div>
                             </motion.div>
                         ))}
-                    </div>
-
-                    {/* Bottom Buttons */}
-                    <div className="mt-8">
-                        {/* API 폴링 방식이므로 'Pause' 버튼은 실제 동작과 맞지 않아 주석 처리합니다.
-                          <button
-                              onClick={() => setIsAutoProgress(!isAutoProgress)}
-                              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg transition-colors"
-                          >
-                              {isAutoProgress ? '⏸ Pause Auto Progress' : '▶ Resume Auto Progress'}
-                          </button>
-                        */}
                     </div>
                 </motion.div>
 
@@ -370,7 +400,7 @@ export default function DeploymentPipeline({
                                     <motion.button
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        onClick={handleGoToProject}
+                                        onClick={handleGoToProjectDetail}
                                         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center gap-2"
                                     >
                                         Go to Projects

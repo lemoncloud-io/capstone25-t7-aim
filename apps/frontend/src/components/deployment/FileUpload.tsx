@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JSZip from 'jszip';
-import { createProject, fetchProject } from '../../services/project/projectApi';
+import { createProject, fetchProject } from '../../apis/projectApi';
 
 interface FileUploadProps {}
 

@@ -4,8 +4,8 @@ import Dashboard from '../components//project/Dashboard';
 import Settings from '../components/project/Settings';
 import FileDetails from '../components/project/FileDetails';
 import BuildLogs from '../components/project/BuildLogs';
-import { Project } from '../types';
-import { fetchProject, deleteProject } from '../services/project/projectApi';
+import { ProjectResponse } from '@shared/types';
+import { fetchProject, deleteProject } from '../apis/projectApi';
 
 type PageType = 'dashboard' | 'apikeys' | 'file' | 'buildlogs';
 
@@ -54,7 +54,7 @@ export default function ProjectDetailPage() {
     const navigate = useNavigate();
 
     const [page, setPage] = useState<PageType>('dashboard');
-    const [project, setProject] = useState<Project | null>(null);
+    const [project, setProject] = useState<ProjectResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -234,7 +234,19 @@ export default function ProjectDetailPage() {
                                 d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
                             />
                         </svg>
-                        <span className="font-semibold">배포된 URL </span>
+                        <span className="font-semibold">배포된 URL</span>
+                        {project.latestDeployment?.status === 'SUCCESS' && project.latestDeployment.frontendUrl ? (
+                            <a
+                                href={project.latestDeployment.frontendUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline ml-2"
+                            >
+                                {project.latestDeployment.frontendUrl}
+                            </a>
+                        ) : (
+                            <span className="text-gray-500 ml-2">배포 완료 후 표시됩니다</span>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2 text-gray-600">
@@ -246,8 +258,8 @@ export default function ProjectDetailPage() {
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                         </svg>
-                        <span className="font-semibold">마지막 배포 :</span>
-                        <span>{formatDate(project.updatedAt.toISOString())}</span>
+                        <span className="font-semibold">최근 배포일 :</span>
+                        <span>{formatDate(project.updatedAt)}</span>
                     </div>
 
                     <div className="flex items-center gap-2 text-gray-600">
@@ -259,8 +271,8 @@ export default function ProjectDetailPage() {
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
                         </svg>
-                        <span className="font-semibold">배포일 :</span>
-                        <span>{formatDate(project.uploadedAt.toISOString())}</span>
+                        <span className="font-semibold">생성일 :</span>
+                        <span>{formatDate(project.createdAt)}</span>
                     </div>
 
                     {project.originalFileName && (

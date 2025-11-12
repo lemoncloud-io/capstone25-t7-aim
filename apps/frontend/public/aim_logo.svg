@@ -1,0 +1,24 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+  width="512"
+  height="512"
+  fill="none"
+>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C4FF"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cloud outline with inner wave -->
+  <path
+    d="M160 360H360C410 360 448 322 448 272C448 230 420 194 380 184C370 140 330 104 280 104C238 104 200 126 180 160C175 159 170 158 164 158C118 158 80 196 80 242C80 286 118 324 162 326L170 326C190 310 210 298 240 288C270 278 300 284 320 296C340 308 360 310 384 304"
+    stroke="url(#grad)"
+    stroke-width="28"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+</svg>

@@ -16,8 +16,7 @@
         "jszip": "^3.10.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router-dom": "^7.9.4",
-        "shared": "file:../../packages/shared"
+        "react-router-dom": "^7.9.4"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.4.2",

@@ -1,7 +1,7 @@
-import { Project } from '../../types';
+import { ProjectResponse } from '@shared/types';
 
 interface BuildLogsProps {
-    project: Project | null;
+    project: ProjectResponse | null;
 }
 
 export default function BuildLogs({ project }: BuildLogsProps) {

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Project } from '../../types';
+import { ProjectResponse } from '@shared/types';
 
 interface StatCard {
     icon: string;
@@ -15,7 +15,7 @@ interface SystemStat {
 }
 
 interface DashboardProps {
-    project: Project | null;
+    project: ProjectResponse | null;
 }
 
 const Dashboard = ({ project }: DashboardProps): JSX.Element => {
@@ -100,7 +100,7 @@ const Dashboard = ({ project }: DashboardProps): JSX.Element => {
                             onClick={handleViewDeploymentStatus}
                             className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:shadow-xl transition-all duration-200 hover:scale-105"
                         >
-                            Re-Deploy
+                            Deployment Pipeline Status
                         </button>
                     )}
                 </div>
@@ -110,7 +110,7 @@ const Dashboard = ({ project }: DashboardProps): JSX.Element => {
                     {statCards.map((card: StatCard, index: number) => (
                         <div
                             key={index}
-                            className="bg-gray-100 rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
                         >
                             {/* 아이콘 */}
                             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-4 text-2xl">
@@ -139,11 +139,18 @@ const Dashboard = ({ project }: DashboardProps): JSX.Element => {
                 <div className="bg-white rounded-lg border border-gray-200 p-6">
                     <h2 className="text-lg font-semibold text-gray-900 mb-6">시스템 상태</h2>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         {systemStats.map((stat: SystemStat, index: number) => (
-                            <div key={index}>
-                                <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
-                                <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+                            <div
+                                key={`stat-${index}`}
+                                className={stat.label === '프론트엔드 URL' ? 'col-span-full' : ''}
+                            >
+                                <div>
+                                    <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
+                                    <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+                                </div>
+
+                                {stat.label === '프론트엔드 URL' && <div className="h-4" />}
                             </div>
                         ))}
                     </div>

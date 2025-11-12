@@ -1,15 +1,15 @@
 import DeploymentPipeline from '../components/deployment/DeploymentPipeline';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Project, Deployment } from '../types';
-import { fetchDeployment } from '../services/deployment/deploymentApi';
-import { fetchProject } from '../services/project/projectApi';
+import { fetchDeployment } from '../apis/deploymentApi';
+import { fetchProject } from '../apis/projectApi';
+import { DeploymentResponse, ProjectResponse } from '@shared/types';
 
 export default function DeployPage() {
     const navigate = useNavigate();
     const { deploymentId } = useParams<{ deploymentId: string }>();
-    const [project, setProject] = useState<Project | null>(null);
-    const [deployment, setDeployment] = useState<Deployment | null>(null);
+    const [project, setProject] = useState<ProjectResponse | null>(null);
+    const [deployment, setDeployment] = useState<DeploymentResponse | null>(null);
     const [logs, setLogs] = useState<{ message: string }[]>([]);
     const [loading, setLoading] = useState(true);
 

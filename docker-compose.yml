@@ -1,6 +1,7 @@
 services:
   mongo:
-    image: mongo
+    image: mongo:latest
+    container_name: mongo
     ports:
       - "27017:27017"
     volumes:
@@ -9,11 +10,12 @@ services:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
     ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # External services
+      - "127.0.0.1:4566:4566" # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # External services
     environment:
       - DEBUG=${DEBUG-}
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - USE_LOCALSTACK=true
       - AWS_DEFAULT_REGION=ap-northeast-2
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test

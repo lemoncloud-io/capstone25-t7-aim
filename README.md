@@ -26,7 +26,21 @@
     npm ci
     ```
 
-3. **환경 변수 설정**
+3. **Docker 시작**
+
+    MongoDB와 LocalStack 등의 필요한 서비스를 Docker로 실행:
+
+    ```bash
+    docker-compose up -d
+    ```
+
+    서비스 중지:
+
+    ```bash
+    docker-compose down
+    ```
+
+4. **환경 변수 설정**
 
     각 애플리케이션에 `.env` 파일을 생성해야 합니다:
 
@@ -44,13 +58,54 @@
 
     필요에 따라 생성된 `.env` 파일의 값을 수정하세요.
 
-4. **개발 서버 시작**
+5. **개발 서버 시작**
+
     ```bash
     npm start
     ```
 
     - 프론트엔드: http://localhost:5173
     - 백엔드 API: http://localhost:4000
+
+    **또는 개별 시작:**
+
+    ```bash
+    # 프론트엔드만
+    npm run frontend
+
+    # 백엔드만
+    npm run backend
+    ```
+
+6. **프로덕션 빌드 및 실행**
+
+    프로덕션 환경에서 실행하려면 먼저 빌드를 수행해야 합니다:
+
+    ```bash
+    # 전체 빌드
+    npm run build
+    ```
+
+    **또는 개별 빌드:**
+
+    ```bash
+    # 백엔드 빌드
+    npm run build:backend
+
+    # 프론트엔드 빌드
+    npm run build:frontend
+    ```
+
+    **프로덕션 모드 시작:**
+
+    ```bash
+    # 프로덕션 빌드 후 시작 (빌드 + 시작)
+    npm run start:prod
+
+    # 또는 개별 시작
+    npm run start:prod:backend  # 백엔드 프로덕션
+    npm run start:prod:frontend # 프론트엔드 프리뷰
+    ```
 
 ## 프로젝트 구조
 

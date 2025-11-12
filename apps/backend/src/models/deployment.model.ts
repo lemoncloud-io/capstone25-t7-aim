@@ -7,6 +7,7 @@ export interface IDeployment extends Document {
     currentStep?: 'UPLOADING' | 'ANALYZING' | 'SPLITTING' | 'DEPLOYING_BACKEND' | 'DEPLOYING_FRONTEND' | 'FINALIZING';
     frontendUrl?: string;
     backendUrl?: string;
+    monorepoZipUrl?: string;
     errorMessage?: string;
     startedAt: Date;
     completedAt?: Date;
@@ -22,6 +23,7 @@ const deploymentSchema = new Schema<IDeployment>({
     },
     frontendUrl: { type: String },
     backendUrl: { type: String },
+    monorepoZipUrl: { type: String },
     errorMessage: { type: String },
     startedAt: { type: Date, default: Date.now },
     completedAt: { type: Date },

@@ -1,0 +1,320 @@
+# 테스트용 유저 프롬프트
+# - ai-blog-title-generator
+prompt: 
+    genaiBackend1: |-
+        **[단계별 리팩토링 요청]**
+
+        **현재 작업 단계:** 1
+
+        **앱 이름 (APP_NAME):** ai-blog-title-generator 
+
+        **기존 코드:**
+        **apps/backend/src/services/geminiService.ts**
+
+        ```typescript
+
+        import { GoogleGenAI, Type } from "@google/genai";
+        import type { GeneratedContent } from '../types';
+
+        if (!process.env.API_KEY) {
+            throw new Error("API_KEY environment variable not set");
+        }
+
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+        const responseSchema = {
+            type: Type.OBJECT,
+            properties: {
+                titles: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                    description: "Generated blog titles"
+                },
+                tags: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                    description: "Generated blog tags"
+                }
+            },
+            required: ["titles", "tags"],
+        };
+
+        export async function generateBlogContent(keyword: string): Promise<GeneratedContent> {
+            const prompt = `'${keyword}'라는 키워드에 대한 블로그 포스팅 제목 5개와 관련 태그 10개를 생성해줘. 제목은 사람들의 클릭을 유도할 수 있도록 흥미롭고 창의적으로 만들어줘. 태그는 검색에 유리하도록 핵심적인 내용으로 구성해줘. 결과는 JSON 형식으로 반환해줘.`;
+
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema,
+                    temperature: 0.8,
+                    topP: 0.95,
+                },
+            });
+
+            const jsonString = response.text.trim();
+            const parsedJson = JSON.parse(jsonString);
+
+            // Basic validation
+            if (parsedJson && Array.isArray(parsedJson.titles) && Array.isArray(parsedJson.tags)) {
+                return parsedJson as GeneratedContent;
+            } else {
+                throw new Error("Invalid JSON structure received from API.");
+            }
+
+            } catch (error) {
+                console.error("Error generating content:", error);
+                throw new Error("Failed to generate content from Gemini API.");
+            }
+        }
+        ```
+
+        **apps/backend/src/services/types.ts
+        ```typescript
+
+        export interface GeneratedContent {
+            titles: string[];
+            tags: string[];
+        }
+        ```
+    genaiBackend2: |-
+        **[단계별 리팩토링 요청]**
+
+        **현재 작업 단계:** 2
+
+        **앱 이름 (APP_NAME):** ai-blog-title-generator 
+
+        **기존 코드:**
+        **apps/backend/src/api/hello-api.ts (HelloAPIController가 정의된 기존 API 파일)**
+        ```typescript
+        /**
+        * `hello-api.ts`
+        * - service endpoint for `/hello`
+        *
+        *
+        * @author      Steve Jung <steve@lemoncloud.io>
+        * @date        2025-10-10 initial version with `lemon-core#4.0.7`
+        *
+        * @copyright   (C) lemoncloud.io 2025 - All Rights Reserved. (https://eureka.codes)
+        */
+        import { $T, $U, _log, NextHandler, GeneralWEBController, NextContext } from 'lemon-core';
+        import { Model, TestModel } from '../service/model';
+        import { HelloService } from '../service/service';
+        const NS = $U.NS('hello', 'yellow'); // NAMESPACE TO BE PRINTED.
+
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        /**
+        * class: `HelloAPIController`
+        * - handle of `/hello` type
+        *
+        * support basic CRUD operations.
+        * - GET    /hello         => list-all
+        * - GET    /hello/:id     => get-one
+        * - POST   /hello/:id     => create-new (at position :id)
+        * - PUT    /hello/:id     => update-existing (at position :id)
+        * - DELETE /hello/:id     => delete-existing (at position :id)
+        * - GET    /hello/:id/say => get-one with say command.
+        */
+        export class HelloAPIController extends GeneralWEBController {
+            /** sample data */
+            private BUFF: TestModel[] = [
+                {
+                    name: `Hello World: ${new Date().toISOString().split('T')[0]}`,
+                },
+            ];
+
+            /**
+            * default constructor.
+            */
+            public constructor(readonly service?: HelloService) {
+                super('hello');
+                _log(NS, `HelloAPIController()...`);
+
+                const tableName = $U.env('MY_DYNAMO_TABLE');
+                this.service = service ?? new HelloService(tableName);
+                _log(NS, `> tableName = ${tableName}`);
+            }
+
+            /**
+            * name of this resource.
+            */
+            public hello = () => `hello-api-controller:${this.type()}`;
+
+            /**
+            * transform from model to view.
+            */
+            public modelAsView = <T extends Model>(model: T) => $U.cleanup({ ...model }) as T;
+
+            /**
+            * list hello
+            *
+            * ```sh
+            * $ http ':8000/hello'
+            */
+            public doList: NextHandler = async (id, param, body, context) => {
+                const errScope = `doList(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+                const name = $U.env('NAME'); // read via process.env
+                const list = this.BUFF?.map((N, i) => this.modelAsView({ id: `${i}`, name: N.name }));
+                return { name, list };
+            };
+
+            /**
+            * get hello hello
+            *
+            * ```sh
+            * $ http ':8000/hello/0'
+            */
+            public doGet: NextHandler = async (id, param, body, context) => {
+                const errScope = `doGet(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+                const i = $U.N(id, 0);
+                const val = this.BUFF[i];
+                if (val === undefined) throw new Error(`404 NOT FOUND - id:${id}`);
+                return this.modelAsView({ ...val, id: `${i}` });
+            };
+
+            /**
+            * Only Update with incremental support
+            *
+            * ```sh
+            * $ echo '{"name":1}' | http PUT ':8000/hello/0'
+            * $ http PUT ':8000/hello/0' name=1
+            */
+            public doPut: NextHandler = async (id, param, body, context) => {
+                const errScope = `doPut(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+                const node = await this.doGet(id, null, null, context);
+                const i = $U.N(node?.id, 0);
+                this.BUFF[i] = { ...node, ...body };
+                return this.modelAsView(this.BUFF[i]);
+            };
+
+            /**
+            * Insert new Node at position 0.
+            *
+            * ```sh
+            * $ http :8000/hello/0 name=hello
+            */
+            public doPost: NextHandler = async (id, param, body, context) => {
+                const errScope = `doPost(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+                if (id == 'echo') return this.doPostEcho('0', param, body, context);
+
+                //* append into array.
+                _log(NS, errScope);
+                const i = $U.N(id, 0);
+                if (i) throw new Error(`@id[${id}] (number) is invalid - ${errScope}`);
+                if (!body?.name) throw new Error(`.name (string) is required - ${errScope}`);
+                const name = $T.S2(body?.name, '', ' ').trim(); // clear new-lines
+                const model: TestModel = { name, _id: `${this.BUFF.length}` };
+                this.BUFF.push(model);
+
+                // returns the last-index.
+                return this.modelAsView({ ...model, id: `${this.BUFF.length - 1}` });
+            };
+
+            /**
+            * echo the request.
+            *
+            * ```sh
+            * $ http :8000/hello/0/echo name=hello
+            */
+            public doPostEcho: NextHandler = async (id, param, body, $ctx) => {
+                const errScope = `doPostEcho(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+                const context = $T.onlyDefined<NextContext>({
+                    domain: $ctx?.domain,
+                    clientIp: $ctx?.clientIp,
+                    userAgent: $ctx?.userAgent,
+                    authorization: $ctx?.authorization,
+                    referer: $ctx?.referer,
+                    cookie: $ctx?.cookie,
+                });
+                return { id, cmd: 'echo', param, body, context };
+            };
+
+            /**
+            * Delete Node (or mark deleted)
+            *
+            * ```sh
+            * $ http DELETE ':8000/hello/1'
+            */
+            public doDelete: NextHandler = async (id, param, body, context) => {
+                const errScope = `doDelete(${this.type()}/${id ?? ''})`;
+                _log(NS, `${errScope} ...`);
+
+                // find, and delete by index
+                const node = await this.doGet(id, null, null, context);
+                const i = $U.N(node?.id, 0);
+                delete this.BUFF[i];
+                return this.modelAsView(node);
+            };
+        }
+
+        //*export as default.
+        export default new HelloAPIController();
+        ```
+
+        **이전 1단계의 결과물:**
+        **apps/backend/src/services/geminiService.ts**
+        ```typescript
+
+        import { GoogleGenAI, Type } from "@google/genai";
+        import type { GeneratedContent } from './types';
+
+        if (!process.env.API_KEY) {
+            throw new Error("API_KEY environment variable not set");
+        }
+
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+        const responseSchema = {
+            type: Type.OBJECT,
+            properties: {
+                titles: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                    description: "Generated blog titles"
+                },
+                tags: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                    description: "Generated blog tags"
+                }
+            },
+            required: ["titles", "tags"],
+        };
+
+        export async function generateBlogContent($param: { keyword: string }): Promise<GeneratedContent> {
+            const prompt = `'${$param?.keyword}'라는 키워드에 대한 블로그 포스팅 제목 5개와 관련 태그 10개를 생성해줘. 제목은 사람들의 클릭을 유도할 수 있도록 흥미롭고 창의적으로 만들어줘. 태그는 검색에 유리하도록 핵심적인 내용으로 구성해줘. 결과는 JSON 형식으로 반환해줘.`;
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema,
+                    temperature: 0.8,
+                    topP: 0.95,
+                },
+            });
+
+            const jsonString = response.text.trim();
+            const parsedJson = JSON.parse(jsonString);
+
+            // Basic validation
+            if (parsedJson && Array.isArray(parsedJson.titles) && Array.isArray(parsedJson.tags)) {
+                return parsedJson as GeneratedContent;
+            } else {
+                throw new Error("Invalid JSON structure received from API.");
+            }
+
+            } catch (error) {
+                console.error("Error generating content:", error);
+                throw new Error("Failed to generate content from Gemini API.");
+            }
+        }
+        ```

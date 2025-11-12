@@ -112,18 +112,18 @@
 ```
 capstone25-t7-aim/
 ├── apps/
-│   ├── frontend/          # React + Vite 애플리케이션
-│   │   ├── src/
-│   │   │   ├── components/    # 재사용 가능한 UI 컴포넌트
-│   │   ├── pages/         # 페이지 컴포넌트
-│   │   ├── services/      # API 서비스 및 통신 로직
-│   │   ├── assets/        # 정적 자산
-│   │   ├── App.tsx        # 메인 앱 컴포넌트
-│   │   ├── main.tsx       # React 진입점
-│   │   ├── index.css      # 글로벌 스타일
-│   │   ├── types.ts       # TypeScript 타입 정의
-│   │   └── vite-env.d.ts  # Vite 환경 타입
+│   ├── frontend/               # React + Vite 애플리케이션
 │   │   ├── public/
+│   │   │   └── aim_logo.svg    # 브랜드 자산
+│   │   ├── src/
+│   │   │   ├── apis/           # API 호출 모듈 (통합)
+│   │   │   ├── components/     # 재사용 가능한 UI 컴포넌트
+│   │   │   ├── pages/          # 페이지 컴포넌트
+│   │   │   ├── utils/          # 프론트 전용 유틸
+│   │   │   ├── App.tsx
+│   │   │   ├── main.tsx
+│   │   │   ├── index.css
+│   │   │   └── vite-env.d.ts
 │   │   ├── package.json
 │   │   ├── vite.config.ts
 │   │   ├── tsconfig.json
@@ -132,17 +132,18 @@ capstone25-t7-aim/
 │   │   ├── postcss.config.js
 │   │   └── jest.config.ts
 │   │
-│   └── backend/           # Express API 서버
+│   └── backend/                # Express API 서버
 │       ├── src/
-│       │   ├── api/           # API 라우트 핸들러
-│       │   ├── models/        # Mongoose 모델
-│       │   ├── services/      # 비즈니스 로직 서비스
-│       │   ├── app.ts         # Express 앱 설정
-│       │   ├── server.ts      # 서버 진입점
-│       │   └── index.ts       # 메인 진입점
+│       │   ├── apis/           # API 라우트 (정리/통합)
+│       │   ├── models/         # Mongoose 모델
+│       │   ├── services/       # 비즈니스 로직/작업자
+│       │   ├── repositories/   # 데이터 접근 계층
+│       │   ├── lib/            # 공용 라이브러리 (예: S3 client 등)
+│       │   ├── utils/          # 백엔드 유틸
+│       │   ├── app.ts          # Express 앱 설정
+│       │   └── server.ts       # 서버 진입점
 │       ├── package.json
 │       ├── tsconfig.json
-│       ├── tsconfig.build.json
 │       ├── jest.config.ts
 │       ├── nodemon.json
 │       └── .env.example
@@ -158,10 +159,18 @@ capstone25-t7-aim/
 │       └── jest.config.json
 │
 ├── apps/
-│   └── aim-hello-api/     # AIM 분석 API
+│   └── aim-hello-api/          # AIM 분석 API (Gemini 연계)
+│       ├── data/               # 프롬프트 자산 (json/yml)
+│       │   ├── system-prompt.json
+│       │   ├── system-prompt.yml
+│       │   ├── user-prompt.yml
+│       │   └── user-prompt-00.yml
 │       ├── src/
 │       │   ├── api/
 │       │   ├── service/
+│       │   │   ├── gemini-service.ts
+│       │   │   └── types.ts
+│       │   ├── utils.ts
 │       │   ├── engine.ts
 │       │   ├── express.ts
 │       │   └── index.ts
@@ -169,7 +178,6 @@ capstone25-t7-aim/
 │       ├── jest.config.json
 │       ├── package.json
 │       ├── tsconfig.json
-│       ├── tsconfig.build.json
 │       └── env/
 │
 ├── sample/                # 샘플 파일들
@@ -188,26 +196,23 @@ capstone25-t7-aim/
 
 ### 주요 디렉토리 설명
 
-- **`apps/frontend`** - Vite를 사용한 React 프론트엔드 애플리케이션
-    - `components/` - 재사용 가능한 UI 컴포넌트들
-    - `pages/` - 라우팅되는 페이지 컴포넌트들
-    - `services/` - 백엔드 API와의 통신 로직
-    - `types/` - TypeScript 타입 정의
+- `apps/frontend` — Vite 기반 React 앱
+    - `src/apis` 프론트 API 호출 모듈 통합
+    - `src/components`, `src/pages`, `src/utils`
+    - `public/aim_logo.svg` 브랜드 자산
 
-- **`apps/backend`** - Express.js REST API 서버
-    - `api/` - API 엔드포인트 핸들러들
-    - `models/` - MongoDB/Mongoose 데이터 모델들
-    - `services/` - 비즈니스 로직과 백그라운드 작업들
+- `apps/backend` — Express REST API
+    - `src/apis` 라우트, `src/services` 비즈니스 로직, `src/models` 데이터 모델
+    - `src/repositories`, `src/lib`, `src/utils` 로 관심사 분리
 
-- **`apps/aim-hello-api`** - AIM 분석을 위한 API 서비스
-    - `api/` - 분석 API 엔드포인트들
-    - `service/` - 분석 로직과 모델들
+- `apps/aim-hello-api` — AIM 분석 API (Gemini)
+    - `data/` 프롬프트 자산: system/user prompt (json/yml)
+    - `src/service/gemini-service.ts` Gemini 연계 서비스
+    - ENV로 프롬프트 디렉터리/프로필 선택 가능(아래 참고)
 
-- **`packages/shared`** - 프론트엔드와 백엔드 간 공유 코드
-    - `types.ts` - 공통 타입 정의
-    - `utils.ts` - 공통 유틸리티 함수들
+- `packages/shared` — 공통 타입/유틸
 
-- **`volume/`** - Docker 컨테이너용 영구 저장소
+- `volume/` — Docker 영구 저장소 (LocalStack/MongoDB 등)
 
 ## 💻 개발
 
@@ -281,7 +286,7 @@ npm run start:prod:backend
 npm run start:prod:frontend
 ```
 
-### 빌드[aim-hello-api]
+### 빌드 [aim-hello-api]
 
 `aim-hello-api` 기준 모노레포 구성 설정
 
@@ -306,6 +311,17 @@ modified/2025-10-10 15:30:36
 env/ENV= NAME=none STAGE=local
 env/REPORT_ERROR_ARN=
 ```
+
+### 프롬프트 자산 및 ENV (aim-hello-api)
+
+- 기본 디렉터리: `apps/aim-hello-api/data`
+- 주요 파일: `system-prompt.json|yml`, `user-prompt.yml`, `user-prompt-00.yml`
+- 권장 환경 변수:
+    - `PROMPT_DIR=apps/aim-hello-api/data`
+    - `USER_PROMPT_PROFILE=user-prompt.yml` (예: `user-prompt-00.yml`로 변경 가능)
+    - `GEMINI_API_KEY=<your-key>`
+
+서비스는 json/yml를 자동 인식하도록 구성(로더 적용 PR 기준)되며, 포맷/프로필을 ENV로 전환할 수 있습니다.
 
 ## 테스트
 
@@ -382,8 +398,3 @@ npm run format:check
 - **ts-node** - TypeScript 실행
 - **concurrently** - 여러 명령어 동시 실행
 
-김예진 pull request test입니다
-최서연 test입니다.
-김유민 test입니다.
-김유민 re-test
-김종웅 test입니다.

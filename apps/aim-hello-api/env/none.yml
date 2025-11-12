@@ -14,17 +14,18 @@ default_env: &default_env
 local:
     <<: *default_env
     STAGE: 'local'
-    GEMINI_API_KEY: 'AIzaSyA7gTmtisBsbgs1UyOHURoG3tXLUjaAWCk' # Replace with your actual Gemini API key
+    GEMINI_API_KEY: 'AIzaSyAeQcwmB6lOlL_szew7uuqJP0G-ypkRvyA' # Replace with your actual Gemini API key
     # AWS 설정 (개발 시 LocalStack을 사용하려면 USE_LOCALSTACK=true 로 설정)
-    USE_LOCALSTACK: 'false'
+    USE_LOCALSTACK: 'true'
     # 실제 AWS를 사용할 경우 아래 값들을 환경에 맞게 설정하세요.
     AWS_ACCESS_KEY_ID: ''
     AWS_SECRET_ACCESS_KEY: ''
     AWS_DEFAULT_REGION: 'ap-northeast-2'
     # 로컬 테스트(LocalStack) 사용 시에만 endpoint를 지정하세요. 예: http://localhost:4566
-    AWS_ENDPOINT_URL: ''
+    AWS_ENDPOINT_URL: 'http://localhost:4566'
     AWS_S3_FORCE_PATH_STYLE: 'false'
     S3_BUCKET: 'aim-deploy-bucket'
+    CODE_API_KEY: 'QGPJJlBUza5egp3wBDfGZ5CpEPS58t3K1G1EnTuJ'
 
 #-----------------------------------
 # development server

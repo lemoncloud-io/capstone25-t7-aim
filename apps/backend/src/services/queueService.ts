@@ -47,10 +47,16 @@ const processDeploymentJobAsync = async (deployment: IDeployment): Promise<void>
         await processDeploymentJob(deployment);
 
         // 상태 업데이트: SUCCESS
-        await Deployment.findByIdAndUpdate(deployment._id as string, {
-            status: 'SUCCESS',
-            updatedAt: new Date(),
-        });
+        await Deployment.updateOne(
+            { _id: deployment._id },
+            {
+                $set: {
+                    status: 'SUCCESS',
+                    completedAt: new Date(),
+                    updatedAt: new Date(),
+                },
+            },
+        );
 
         // 프로젝트 상태도 업데이트: completed
         await Project.findByIdAndUpdate(deployment.projectId, {
@@ -59,10 +65,16 @@ const processDeploymentJobAsync = async (deployment: IDeployment): Promise<void>
         });
     } catch (error) {
         // 상태 업데이트: FAILED
-        await Deployment.findByIdAndUpdate(deployment._id as string, {
-            status: 'FAILED',
-            updatedAt: new Date(),
-        });
+        await Deployment.updateOne(
+            { _id: deployment._id },
+            {
+                $set: {
+                    status: 'FAILED',
+                    completedAt: new Date(),
+                    updatedAt: new Date(),
+                },
+            },
+        );
 
         // 프로젝트 상태도 업데이트: failed
         await Project.findByIdAndUpdate(deployment.projectId, {

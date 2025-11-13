@@ -1,7 +1,7 @@
-import { Project } from '../../types';
+import { ProjectResponse } from '@shared/types';
 
 interface FileDetailsProps {
-    project: Project | null;
+    project: ProjectResponse | null;
 }
 
 export default function FileDetails({ project }: FileDetailsProps) {
@@ -109,9 +109,7 @@ export default function FileDetails({ project }: FileDetailsProps) {
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                 />
                             </svg>
-                            <span className="text-gray-900 font-medium">
-                                {formatDateTime(project.uploadedAt.toISOString())}
-                            </span>
+                            <span className="text-gray-900 font-medium">{formatDateTime(project.uploadedAt)}</span>
                         </div>
                     </div>{' '}
                     <div className="space-y-2">
@@ -182,7 +180,7 @@ export default function FileDetails({ project }: FileDetailsProps) {
                                     />
                                 </svg>
                                 <span className="text-gray-900 font-medium">
-                                    {formatDateTime(project.latestDeployment.startedAt.toISOString())}
+                                    {formatDateTime(project.latestDeployment.startedAt)}
                                 </span>
                             </div>
                         </div>
@@ -205,7 +203,7 @@ export default function FileDetails({ project }: FileDetailsProps) {
                                         />
                                     </svg>
                                     <span className="text-gray-900 font-medium">
-                                        {formatDateTime(project.latestDeployment.completedAt!.toISOString())}
+                                        {formatDateTime(project.latestDeployment.completedAt!)}
                                     </span>
                                 </div>
                             </div>

@@ -1,0 +1,167 @@
+# 코드 리팩토링용 유저 프롬프트 정의
+prompt:
+    genaiBackend1: |-
+        **[단계별 리팩토링 요청]**
+
+        **현재 작업 단계:** 1
+
+        **앱 이름 (APP_NAME):** {{appName}}
+
+        **기존 코드:**
+        **apps/backend/src/service/geminiService.ts**
+        ```typescript
+        {{serviceCode}}
+        ```
+
+        **apps/backend/src/services/types/types.ts
+        ```typescript
+        {{typeCode}}
+        ```
+    genaiBackend1En: |-
+        **[Step-by-Step Refactoring Request]**
+
+        **Current Step:** 1
+
+        **App Name (APP_NAME):** {{appName}}
+
+        **Existing Code:**
+        **apps/backend/src/service/geminiService.ts**
+        ```typescript
+        {{serviceCode}}
+
+        **apps/backend/src/shared/types/types.ts**
+        ```typescript
+        {{typeCode}}
+        ```
+
+    genaiBackend2: |-
+        **[단계별 리팩토링 요청]**
+
+        **현재 작업 단계:** 2
+
+        **앱 이름 (APP_NAME):** {{appName}}
+
+        **기존 코드:**
+        **apps/backend/src/api/hello-api.ts (HelloAPIController가 정의된 기존 API 파일)**
+        ```typescript
+        {{apiCode}}
+        ```
+
+    genaiBackend2En: |-
+        **[Step-by-Step Refactoring Request]**
+
+        **Current Step:** 2
+
+        **App Name (APP_NAME):** {{appName}}
+
+        **Existing Code:**
+        **apps/backend/src/api/hello-api.ts** (Existing API file where HelloAPIController is defined)
+        ```typescript
+        {{apiCode}}
+        ```
+    genaiFrontend1: |-
+        **[단계별 리팩토링 요청]**
+
+        **현재 작업 단계:** 3
+
+        **앱 이름 (APP_NAME):** {{appName}}
+
+        **백엔드 API 경로 (:id):** {{apiPathId}}
+
+        **수정 대상 원본 코드:**
+        **(Frontend) services/geminiService.ts**
+        ```typescript
+        {{serviceCode}}
+        ```
+
+        **(Frontend) apps/frontend/src/shared/types/types.ts**
+        ```typescript
+        {{typeCode}}
+        ```
+    genaiFrontend1En: |-
+        **[Step-by-Step Refactoring Request]**
+
+        **Current Step:** 3
+
+        **App Name (APP_NAME):** {{appName}}
+
+        **Backend API Path (:id):** {{apiPathId}}
+
+        **Original Code to Modify:**
+        **(Frontend) services/geminiService.ts**
+        ```typescript
+        {{serviceCode}}
+        ```
+
+        **(Frontend) apps/frontend/src/shared/types/types.ts**
+        ```typescript
+        {{typeCode}}
+        ```
+    openaiBackend1: |-
+        # 단계별 리팩토링 요청
+
+        ## 현재 작업 단계
+        1단계
+
+        ## 앱 이름 (APP_NAME)
+        {{appName}}
+
+        ## 기존 코드
+
+        ### apps/backend/src/service/geminiService.ts
+        ```typescript
+        {{serviceCode}}
+        ```
+
+        ### apps/backend/src/services/types.ts
+        ```typescript
+        {{typeCode}}
+        ```
+    openaiBackend2: |-
+        # 단계별 리팩토링 요청
+
+        ## 현재 작업 단계
+        2단계
+
+        ## 앱 이름 (APP_NAME)
+        {{appName}}
+
+        ## 기존 코드
+
+        ### apps/backend/src/api/hello-api.ts (HelloAPIController가 정의된 기존 API 파일)
+        ```typescript
+        {{apiCode}}
+        ```
+    openaiBackend1En: |-
+        # Step-by-Step Refactoring Request
+
+        ## Current Step
+        Step 1
+
+        ## App Name (APP_NAME)
+        {{appName}}
+
+        ## Existing Code
+        ### apps/backend/src/service/geminiService.ts
+        ```typescript
+        {{serviceCode}}
+        ```
+
+        ### apps/backend/src/services/types.ts
+        ```typescript
+        {{typeCode}}
+        ```
+    openaiBackend2En: |-
+        # Step-by-Step Refactoring Request
+
+        ## Current Step
+        Step 2
+
+        ## App Name (APP_NAME)
+        {{appName}}
+
+        ## Existing Code
+        ### apps/backend/src/api/hello-api.ts (Existing API file where HelloAPIController is defined)
+        ```typescript
+        {{apiCode}}
+        ```

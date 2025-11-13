@@ -1,41 +1,30 @@
----
 #-----------------------------------
 # Dummmy Environment Variables.
 #-----------------------------------
 # default
 default_env: &default_env
-    LS: 0 # log silence.
-    LC: 1 # line-coloring
-    TS: 1 # time-stamp in line
-    NAME: '' # profile name (should be empty for this `none` env)
+  LS: 0                   # log silence.
+  LC: 1                   # line-coloring
+  TS: 1                   # time-stamp in line
+  NAME: ''                # profile name (should be empty for this `none` env)
 
 #-----------------------------------
 # local development configuration.
 local:
-    <<: *default_env
-    STAGE: 'local'
-    GEMINI_API_KEY: 'AIzaSyA7gTmtisBsbgs1UyOHURoG3tXLUjaAWCk' # Replace with your actual Gemini API key
-    # AWS 설정 (개발 시 LocalStack을 사용하려면 USE_LOCALSTACK=true 로 설정)
-    USE_LOCALSTACK: 'false'
-    # 실제 AWS를 사용할 경우 아래 값들을 환경에 맞게 설정하세요.
-    AWS_ACCESS_KEY_ID: ''
-    AWS_SECRET_ACCESS_KEY: ''
-    AWS_DEFAULT_REGION: 'ap-northeast-2'
-    # 로컬 테스트(LocalStack) 사용 시에만 endpoint를 지정하세요. 예: http://localhost:4566
-    AWS_ENDPOINT_URL: ''
-    AWS_S3_FORCE_PATH_STYLE: 'false'
-    S3_BUCKET: 'aim-deploy-bucket'
+  <<: *default_env
+  STAGE: 'local'
 
 #-----------------------------------
 # development server
 dev:
-    <<: *default_env
-    STAGE: 'develop'
+  <<: *default_env
+  STAGE: 'develop'
 
 #-----------------------------------
 # production with AWS deploy
 prod:
-    <<: *default_env
-    STAGE: 'production'
-    NS: SS
-    TS: 0
+  <<: *default_env
+  STAGE: 'production'
+  NS: SS
+  TS: 0
+

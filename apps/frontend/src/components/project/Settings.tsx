@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Project } from '../../types';
-import { BuildSettings } from '@shared/types';
-import { fetchProject } from '../../services/project/projectApi';
+import { BuildSettings, ProjectResponse } from '@shared/types';
+import { fetchProject } from '../../apis/projectApi';
 
 interface SettingsProps {
-    project: Project | null;
+    project: ProjectResponse | null;
 }
 
 export default function Settings({ project }: SettingsProps): JSX.Element {

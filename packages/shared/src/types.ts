@@ -49,8 +49,8 @@ export interface DeploymentResponse {
     projectId: string;
     status: 'PENDING' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED';
     currentStep?: 'UPLOADING' | 'ANALYZING' | 'SPLITTING' | 'DEPLOYING_BACKEND' | 'DEPLOYING_FRONTEND' | 'FINALIZING';
-    frontendUrl?: string;
-    backendUrl?: string;
+    websiteUrl?: string;
+    eurekaDeploymentId?: string;
     errorMessage?: string;
     startedAt: string;
     completedAt?: string;
@@ -59,6 +59,5 @@ export interface DeploymentResponse {
 export interface DeploymentStatusApiResponse {
     deploymentId: string;
     status: DeploymentResponse['status'];
-    frontendUrl?: string;
-    backendUrl?: string;
+    websiteUrl?: string;
 }

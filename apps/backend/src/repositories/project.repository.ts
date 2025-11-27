@@ -16,8 +16,7 @@ function mapToDeploymentResponse(doc: DeploymentDoc): DeploymentResponse {
         projectId: obj.projectId.toString(),
         status: obj.status,
         currentStep: obj.currentStep,
-        frontendUrl: obj.frontendUrl,
-        backendUrl: obj.backendUrl,
+        websiteUrl: obj.websiteUrl,
         errorMessage: obj.errorMessage,
         startedAt: obj.startedAt.toISOString(),
         completedAt: obj.completedAt ? obj.completedAt.toISOString() : undefined,
@@ -66,9 +65,7 @@ export const projectRepository = {
             projects.map(async project => {
                 const latestDeploymentDoc = await Deployment.findOne({ projectId: project._id })
                     .sort({ startedAt: -1 })
-                    .select(
-                        '_id status frontendUrl backendUrl startedAt completedAt projectId currentStep errorMessage',
-                    );
+                    .select('_id status websiteUrl startedAt completedAt projectId currentStep errorMessage');
 
                 const latestDeployment = latestDeploymentDoc ? mapToDeploymentResponse(latestDeploymentDoc) : null;
 
@@ -87,7 +84,7 @@ export const projectRepository = {
 
         const latestDeploymentDoc = await Deployment.findOne({ projectId: project._id })
             .sort({ startedAt: -1 })
-            .select('_id status frontendUrl backendUrl startedAt completedAt projectId currentStep errorMessage');
+            .select('_id status websiteUrl startedAt completedAt projectId currentStep errorMessage');
 
         const latestDeployment = latestDeploymentDoc ? mapToDeploymentResponse(latestDeploymentDoc) : null;
 

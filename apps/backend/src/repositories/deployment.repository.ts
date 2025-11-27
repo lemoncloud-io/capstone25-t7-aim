@@ -16,8 +16,8 @@ function mapToDeploymentResponse(doc: DeploymentDoc): DeploymentResponse {
         projectId: obj.projectId.toString(),
         status: obj.status,
         currentStep: obj.currentStep,
-        frontendUrl: obj.frontendUrl,
-        backendUrl: obj.backendUrl,
+        websiteUrl: obj.websiteUrl,
+        eurekaDeploymentId: obj.eurekaDeploymentId,
         errorMessage: obj.errorMessage,
         startedAt: obj.startedAt.toISOString(),
         completedAt: obj.completedAt ? obj.completedAt.toISOString() : undefined,
@@ -40,26 +40,21 @@ export const deploymentRepository = {
         };
     },
 
-    async getDeploymentStatusById(deploymentId: string): Promise<{
-        status: DeploymentResponse['status'];
-        currentStep: DeploymentResponse['currentStep'];
-        projectId: string;
-        frontendUrl?: string;
-        backendUrl?: string;
-    }> {
-        const deployment = await Deployment.findById(deploymentId).select(
-            'status currentStep projectId frontendUrl backendUrl',
-        );
-        if (!deployment) {
-            throw new AimException(ErrorCode.NOT_FOUND);
+    async updateDeploymentData(
+        deploymentId: string,
+        data: { websiteUrl?: string; monorepoZipUrl?: string; currentStep?: string },
+    ): Promise<void> {
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
+        if (data.websiteUrl !== undefined) {
+            updateData.websiteUrl = data.websiteUrl;
+        }
+        if (data.monorepoZipUrl !== undefined) {
+            updateData.monorepoZipUrl = data.monorepoZipUrl;
+        }
+        if (data.currentStep !== undefined) {
+            updateData.currentStep = data.currentStep;
         }
 
-        return {
-            status: deployment.status,
-            currentStep: deployment.currentStep,
-            projectId: deployment.projectId.toString(),
-            frontendUrl: deployment.frontendUrl,
-            backendUrl: deployment.backendUrl,
-        };
+        await Deployment.updateOne({ _id: deploymentId }, { $set: updateData });
     },
 };
